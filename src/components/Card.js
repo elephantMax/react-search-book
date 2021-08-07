@@ -1,23 +1,34 @@
 import { Link } from "react-router-dom";
+import noImage from '../no-image.svg'
+import Books from "../store/Books";
 
-const Card = () => {
+const Card = ({book}) => {
+    const { volumeInfo } = book
+
+    const image = volumeInfo?.imageLinks?.thumbnail || noImage
 
     const imageStyle = {
-        width: '100%',
+        maxWidth: '100%',
         aspectRatio: '4/3',
-        objectFit: 'cover'
+        objectFit: 'scale-down'
     }
+
+    const setSelectedBook = () => {
+        Books.selectBook(book.id)
+    }
+
+
     return (
-        <div className="card">
-            <img src="https://im0-tub-ru.yandex.net/i?id=84dbd50839c3d640ebfc0de20994c30d&n=27&h=480&w=480" alt="book-poster" style={imageStyle} />
+        <div className="card" style={{height: '500px'}}>
+            <img src={image} alt="book-poster" style={imageStyle} />
             <div className="card-body">
                 <h5 className="card-title">
-                    <Link to="/book/1" className="card-link">
-                        Card Link
+                    <Link to={`/book/${book.id}`} onClick={setSelectedBook} className="card-link">
+                        {volumeInfo.title}
                     </Link>
                 </h5>
-                <h6 className="card-subtitle mb-2 text-muted">Категория: Категория</h6>
-                <p className="card-text">Авторы: Автор1, Автор2</p>
+                <h6 className="card-subtitle mb-2 text-muted">Category: {volumeInfo.categories || ''}</h6>
+                <p className="card-text">Authors: {volumeInfo.authors}</p>
             </div>
         </div>
     );

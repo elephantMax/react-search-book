@@ -8,6 +8,8 @@
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.1.0",
     "bootstrap-icons": "^1.5.0",
+    "mobx": "^6.3.2",
+    "mobx-react-lite": "^3.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
