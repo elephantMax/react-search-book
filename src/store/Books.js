@@ -30,7 +30,13 @@ class Books {
         }
 
         this.category = this.category === 'all' ? '' : this.category
-        const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${this.title}+subject:${this.category}&projection=full&maxResults=30&orderBy=${this.sortBy}&startIndex=${startIndex}&key=${API_KEY}`)
+        let url
+        if (this.category) {
+            url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${this.title}+subject:${this.category}&projection=full&maxResults=30&orderBy=${this.sortBy}&startIndex=${startIndex}&key=${API_KEY}`
+        } else {
+            url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${this.title}&projection=full&maxResults=30&orderBy=${this.sortBy}&startIndex=${startIndex}&key=${API_KEY}`
+        }
+        const response = await fetch(url)
         const data = await response.json()
         runInAction(() => {
             this.loading = false
