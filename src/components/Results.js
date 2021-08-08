@@ -4,14 +4,14 @@ import Card from "./Card"
 
 const Results = observer(() => {
 
-    const loading = Books.loading
+    const { loading, error } = Books
 
     const fetchMore = () => {
         Books.fetchByTitle(Books.books.length)
     }
 
     return (
-        <>
+        <div>
             {
                 loading ? (
                     <div className="d-flex justify-content-center">
@@ -22,7 +22,8 @@ const Results = observer(() => {
 
                 ) : (
                     <>
-                        {Books.books.length ? (
+                        {error ? <p>{error}</p> : 
+                         Books.books.length ? (
                             <>
                                 <p className="text-center fw-bold">Found {Books.total}</p>
                                 <div className="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-3">
@@ -43,12 +44,12 @@ const Results = observer(() => {
                                             </button>}
                                     </div>
                                 ) : ''}
-                            </>) :
+                            </>) : 
                             <p className="fw-bold text-center">Not found</p>}
                     </>
                 )
             }
-        </>
+        </div>
     );
 })
 
