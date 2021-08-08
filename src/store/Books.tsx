@@ -1,13 +1,14 @@
 import { makeAutoObservable, runInAction } from "mobx"
 import getUniqueBooksInArray from "../plugins/getUniqueBooksInArray"
+import { BookType } from "../types/BookType"
 const API_KEY = "AIzaSyDxNguTwAfHaKOp3sePp2HEkguDtKLDmL8"
 const BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
 
 class Books {
-    books = []
+    books = [] as BookType[]
     loading = false
     loadingMore = false
-    book = {}
+    book = {} as BookType
     total = 0
     error = ''
 
@@ -63,7 +64,7 @@ class Books {
 
     }
 
-    async fetchById(id) {
+    async fetchById(id: string) {
         try {
             this.setError('')
             const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
@@ -79,23 +80,23 @@ class Books {
 
     }
 
-    selectBook(id) {
-        this.book = this.books.find(book => book.id === id)
+    selectBook(id: string) {
+        this.book = this.books.find((book: BookType) => book.id === id) || {} as BookType
     }
 
-    setTitle(value) {
+    setTitle(value: string) {
         this.title = value
     }
 
-    setSortBy(value) {
+    setSortBy(value: string) {
         this.sortBy = value
     }
 
-    setCategory(value) {
+    setCategory(value: string) {
         this.category = value
     }
 
-    setError(value) {
+    setError(value: string) {
         this.error = value
     }
 }

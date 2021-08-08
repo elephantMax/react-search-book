@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import Books from "../store/Books";
+import { BookType } from "../types/BookType";
 import Card from "./Card"
 
 const Results = observer(() => {
@@ -27,7 +28,7 @@ const Results = observer(() => {
                             <>
                                 <p className="text-center fw-bold">Found {Books.total}</p>
                                 <div className="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-3">
-                                    {Books.books.map(book =>
+                                    {Books.books.map((book: BookType) =>
                                         <div className="col d-flex flex-column justify-content-stretch" key={book.id}>
                                             <Card book={book} />
                                         </div>

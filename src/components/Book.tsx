@@ -1,46 +1,44 @@
 import Books from "../store/Books";
 import noImage from '../no-image.svg'
 import { Link, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { DetailedHTMLProps, ImgHTMLAttributes, MutableRefObject, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { BookType } from "../types/BookType";
+
+type BookParam = {
+    id: string
+}
 
 const Book = observer(() => {
-    const { id } = useParams()
-    const { book: volume, error } = Books
+    const { id } = useParams<BookParam>()
 
-    const [book, setBook] = useState(null)
-    const [image, setImage] = useState(null)
+    const book: BookType = Books.book
+    const error: string = Books.error
+
+    const [image, setImage] = useState<string>(noImage)
     const [loading, setLoading] = useState(true)
 
-    const descriptionElement = useRef(null)
+    const descriptionElement = useRef<HTMLParagraphElement>(null)
 
     useEffect(() => {
         if (!id) return
 
-        if (volume) {
-            setBook(volume)
-        }
-        Books.fetchById(id).then(() => {
-            setLoading(false)
-        })
+        Books.fetchById(id)
         
     }, [id])
 
     useEffect(() => {
-        if (!volume) return
-        setBook({ ...volume })
-        setImage(volume?.imageLinks?.thumbnail || noImage)
         if(descriptionElement.current) {
-            descriptionElement.current.innerHTML = volume.description || ''
+            descriptionElement.current.innerHTML = book.description || ''
         }
         setLoading(false)
-    }, [volume])
+    }, [book])
 
     const imageStyle = {
         width: '100%',
         aspectRatio: '2/1',
         objectFit: 'scale-down'
-    }
+    } as DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
 
     return (
         <div className="row d-flex justify-content-center mb-2">

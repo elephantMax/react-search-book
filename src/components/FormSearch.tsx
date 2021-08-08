@@ -1,16 +1,27 @@
 import { observer } from "mobx-react-lite";
+import { useState } from "react";
+import { FormEvent } from "react";
 import Books from "../store/Books";
+import { CategoriesType, SortByType } from "../types/BookType";
 
 const FormSearch = observer(() => {
     const { title, category, sortBy } = Books
 
-    const setTitle = (value) => Books.setTitle(value)
-    const setCategory = (value) => Books.setCategory(value)
-    const setSortBy = (value) => Books.setSortBy(value)
+    const setTitle = (value: string) => Books.setTitle(value)
+    const setCategory = (value: CategoriesType) => Books.setCategory(value)
+    const setSortBy = (value: string) => Books.setSortBy(value)
 
-    const search = async (e) => {
+    const [categories] = useState<CategoriesType[]>([
+        'all', 'art', 'biography', 'computers', 'history',
+        'medical', 'poety'
+    ])
+
+    const [sortOptions] = useState<SortByType[]>([
+        'relevance', 'newest'
+    ])
+
+    const search = async (e: FormEvent) => {
         e.preventDefault()
-
         await Books.fetchByTitle()
     }
 
@@ -26,21 +37,18 @@ const FormSearch = observer(() => {
             </div>
             <div className="mb-3">
                 <label className="form-label">Categories</label>
-                <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
-                    <option defaultValue="all">all</option>
-                    <option defaultValue="art">art</option>
-                    <option defaultValue="biography">biography</option>
-                    <option defaultValue="computers">computers</option>
-                    <option defaultValue="history">history</option>
-                    <option defaultValue="medical">medical</option>
-                    <option defaultValue="poetry">poetry</option>
+                <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value as CategoriesType)}>
+                    {categories.map((category) =>
+                        <option key={category} value={category}>{category}</option>
+                    )}
                 </select>
             </div>
             <div className="mb-3">
                 <label className="form-label">Sorting by</label>
                 <select className="form-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                    <option defaultValue="relevance">relevance</option>
-                    <option defaultValue="newest">newest</option>
+                    {sortOptions.map((option) =>
+                        <option key={option} value={option}>{option}</option>
+                    )}
                 </select>
             </div>
         </form>
