@@ -4,8 +4,13 @@ export type SortByType = 'relevance' | 'newest'
 
 export type BookType = {
     id: string
-    title: string
-    description: string
-    categories: CategoriesType[],
-    authors: string[]
+    volumeInfo : {
+        title: string
+        description: string
+        categories: CategoriesType[]
+        authors: string[]
+        imageLinks?: {
+            thumbnail: string
+        }
+    }
 }

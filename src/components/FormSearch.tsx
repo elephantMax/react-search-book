@@ -33,7 +33,7 @@ const FormSearch = observer(() => {
                         <i className="bi bi-search"></i>
                     </button>
                 </div>
-                <input type="search" className="form-control" required value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input type="search" className="form-control" placeholder="enter book title" required value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div className="mb-3">
                 <label className="form-label">Categories</label>

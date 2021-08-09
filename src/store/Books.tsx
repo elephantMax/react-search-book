@@ -1,20 +1,19 @@
 import { makeAutoObservable, runInAction } from "mobx"
-import getUniqueBooksInArray from "../plugins/getUniqueBooksInArray"
 import { BookType } from "../types/BookType"
 const API_KEY = "AIzaSyDxNguTwAfHaKOp3sePp2HEkguDtKLDmL8"
 const BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
 
 class Books {
     books = [] as BookType[]
-    loading = false
-    loadingMore = false
+    loading = false as boolean
+    loadingMore = false as boolean
     book = {} as BookType
-    total = 0
-    error = ''
+    total = 0 as number
+    error = '' as string
 
-    title = ''
-    category = 'all'
-    sortBy = 'relevance'
+    title = '' as string
+    category = 'all' as string
+    sortBy = 'relevance' as string
 
     constructor() {
         makeAutoObservable(this)
@@ -37,9 +36,9 @@ class Books {
             this.category = this.category === 'all' ? '' : this.category
             let url
             if (this.category) {
-                url = `${BASE_URL}?q=intitle:${this.title}+subject:${this.category}&projection=full&maxResults=30&orderBy=${this.sortBy}&startIndex=${startIndex}&key=${API_KEY}`
+                url = `${BASE_URL}?q=${this.title}+subject:${this.category}&maxResults=30&orderBy=${this.sortBy}&startIndex=${startIndex}&key=${API_KEY}`
             } else {
-                url = `${BASE_URL}?q=intitle:${this.title}&projection=full&maxResults=30&orderBy=${this.sortBy}&startIndex=${startIndex}&key=${API_KEY}`
+                url = `${BASE_URL}?q=${this.title}&maxResults=30&orderBy=${this.sortBy}&startIndex=${startIndex}&key=${API_KEY}`
             }
             const response = await fetch(url)
             const data = await response.json()
@@ -50,7 +49,7 @@ class Books {
             })
             if (data.items) {
                 runInAction(() => {
-                    this.books = getUniqueBooksInArray([...this.books, ...data.items])
+                    this.books = [...this.books, ...data.items]
                 })
             }
         } catch (error) {
@@ -61,16 +60,23 @@ class Books {
                 this.loadingMore = false
             })
         }
-
     }
 
     async fetchById(id: string) {
         try {
             this.setError('')
+            runInAction(() => {
+                this.loading = true
+            })
             const response = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`)
             const data = await response.json()
+            if ('error' in data) {
+                throw new Error(data.err)
+            }
+
             runInAction(() => {
-                this.book = data.volumeInfo
+                this.book = data
+                this.loading = false
             })
         } catch (error) {
             const errorObj = new Error(error)
@@ -80,8 +86,8 @@ class Books {
 
     }
 
-    selectBook(id: string) {
-        this.book = this.books.find((book: BookType) => book.id === id) || {} as BookType
+    setBook(book: BookType) {
+        this.book = book
     }
 
     setTitle(value: string) {
