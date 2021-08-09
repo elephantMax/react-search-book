@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx"
+import getUniqueBooksInArray from "../plugins/getUniqueBooksInArray"
 import { BookType } from "../types/BookType"
 const API_KEY = "AIzaSyDxNguTwAfHaKOp3sePp2HEkguDtKLDmL8"
 const BASE_URL = 'https://www.googleapis.com/books/v1/volumes'
@@ -45,11 +46,11 @@ class Books {
             runInAction(() => {
                 this.loading = false
                 this.loadingMore = false
-                this.total = data.totalItems
+                this.total = !startIndex ? data.totalItems : this.total
             })
             if (data.items) {
                 runInAction(() => {
-                    this.books = [...this.books, ...data.items]
+                    this.books = getUniqueBooksInArray([...this.books, ...data.items])
                 })
             }
         } catch (error) {
@@ -88,6 +89,7 @@ class Books {
 
     setBook(book: BookType) {
         this.book = book
+        this.books = []
     }
 
     setTitle(value: string) {
@@ -96,10 +98,12 @@ class Books {
 
     setSortBy(value: string) {
         this.sortBy = value
+        this.books = []
     }
 
     setCategory(value: string) {
         this.category = value
+        this.books = []
     }
 
     setError(value: string) {
